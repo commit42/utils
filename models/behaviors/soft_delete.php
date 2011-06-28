@@ -18,6 +18,12 @@
  * @subpackage utils.models.behaviors
  */
 class SoftDeleteBehavior extends ModelBehavior {
+/**
+ * Is a stand alone version
+ *
+ * @var boolean $standAlone
+ */
+	public $standAlone = true;
 
 /**
  * Default settings
@@ -103,10 +109,16 @@ class SoftDeleteBehavior extends ModelBehavior {
  */
     public function beforeDelete(&$model) {
         $runtime = $this->runtime[$model->alias];
-        if ($runtime) {
-        	$this->delete($model, $model->id);
-            return false;
-        }
+		if ($runtime) {
+			if (!($this->standAlone)) {
+					$this->delete($model, $model->id);
+					return false;
+			}
+			else
+			{
+				return $this->delete($model, $model->id);
+			}
+		}
     }
 
 /**
